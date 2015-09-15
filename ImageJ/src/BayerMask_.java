@@ -31,21 +31,50 @@ public class BayerMask_ implements PlugInFilter {
 					if (u%2 == 0) {
 						// b ist gegeben
 						rgb[B] = ip.getPixel(u, v);
-						// hier die fehlenden 2 Farbkomponenten interpolieren
+						int r1 = ip.getPixel(u-1, v-1);
+                        int r2 = ip.getPixel(u-1, v+1);
+                        int r3 = ip.getPixel(u+1, v-1);
+                        int r4 = ip.getPixel(u+1, v+1);
+                        rgb[R] = (r1 + r2 + r3 + r4) / 4;
+                        int g1 = ip.getPixel(u-1, v);
+                        int g2 = ip.getPixel(u, v+1);
+                        int g3 = ip.getPixel(u, v-1);
+                        int g4 = ip.getPixel(u+1, v);
+                        rgb[G] = (g1 + g2 + g3 + g4) / 4;
+
 					} else {
 						// g ist gegeben
 						rgb[G] = ip.getPixel(u, v);
-						// hier die fehlenden 2 Farbkomponenten interpolieren
+						int b1 = ip.getPixel(u+1, v);
+                        int b2 = ip.getPixel(u-1, v);
+                        rgb[B] = (b1 + b2) / 2;
+                        int r1 = ip.getPixel(u, v+1);
+                        int r2 = ip.getPixel(u, v-1);
+                        rgb[R] = (r1 + r2) / 2;
 					}
 				} else {
 					if (u%2 == 0) {
 						// g ist gegeben
 						rgb[G] = ip.getPixel(u, v);
-						// hier die fehlenden 2 Farbkomponenten interpolieren
+                        int b1 = ip.getPixel(u, v+1);
+                        int b2 = ip.getPixel(u, v-1);
+                        rgb[B] = (b1 + b2) / 2;
+                        int r1 = ip.getPixel(u+1, v);
+                        int r2 = ip.getPixel(u-1, v);
+                        rgb[R] = (r1 + r2) / 2;
 					} else {
 						// r ist gegeben
 						rgb[R] = ip.getPixel(u, v);
-						// hier die fehlenden 2 Farbkomponenten interpolieren
+                        int b1 = ip.getPixel(u-1, v-1);
+                        int b2 = ip.getPixel(u-1, v+1);
+                        int b3 = ip.getPixel(u+1, v-1);
+                        int b4 = ip.getPixel(u+1, v+1);
+                        rgb[B] = (b1 + b2 + b3 + b4) / 4;
+                        int g1 = ip.getPixel(u-1, v);
+                        int g2 = ip.getPixel(u, v+1);
+                        int g3 = ip.getPixel(u, v-1);
+                        int g4 = ip.getPixel(u+1, v);
+                        rgb[G] = (g1 + g2 + g3 + g4) / 4;
 					}
 				}	
 				// rgb-Komponenten des neuen Bildes setzen
