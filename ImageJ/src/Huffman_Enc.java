@@ -1,5 +1,5 @@
 // BVERI
-// Übung 2.2
+// Ãœbung 2.2
 
 import ij.*;
 import ij.process.*;
@@ -54,25 +54,38 @@ public class Huffman_Enc implements PlugInFilter {
 	 * @return root node of code tree
 	 */
 	private Node createHuffmanTree(int[] hist, Leaf[] codes, int size) {
-		PriorityQueue<Node> pq = new PriorityQueue<Node>(hist.length);
+		PriorityQueue<Node> pq = new PriorityQueue<>(hist.length);
+		double ld = Math.log(2);
+		double H = 0;
+		double p;
 
-		// Wahrscheinlichkeiten und Entropie berechnen und neue Blattknoten erzeugen (die Blattknoten sowohl in die Code-Tabelle als auch in die PQ einfügen)
-		// ToDo
 
-		// Mittlere Codelänge und Speicherbedarf abschätzen (Unter- und Obergrenze)
-		// Verwenden Sie für die Ausgabe z.B. einen MessageDialog
-		// ToDo
 
-		// Mittlere Codelänge und Speicherbedarf berechnen und ausgeben
+		// Wahrscheinlichkeiten und Entropie berechnen und neue Blattknoten erzeugen (die Blattknoten sowohl in die Code-Tabelle als auch in die PQ einfÃ¼gen)
+		for (int i = 0; i < hist.length; i++) {
+			p = (double)hist[i]/size;
+			H -= (p == 0) ? 0 : p* Math.log(p)/ld;
+			codes[i] = new Leaf(p, (byte)i);
+			pq.add(codes[i]);
+		}
+
+		// Mittlere CodelÃ¤nge und Speicherbedarf abschÃ¤tzen (Unter- und Obergrenze)
+		// Verwenden Sie fÃ¼r die Ausgabe z.B. einen MessageDialog
+		new MessageDialog(imp.getWindow(), "Speicher", "Mittlere Code LÃ¤nge: [" + H + ", " + (H + 1) + ")\n" +
+                "Speicherbedarf: [" + H*size/8 + ", " + (H+1)*size/8 + ") Byte");
+
+		// Mittlere CodelÃ¤nge und Speicherbedarf berechnen und ausgeben
 		// ToDo
 
 		// Codebaum aufbauen: Verwenden Sie die pq, um die zwei jeweils kleinsten Nodes zu holen
-		// ToDo
+		while (pq.size() >= 2) {
+            pq.add(new Node(pq.poll(), pq.poll()));
+        }
 
 		// Wurzelknoten holen und rekursiv alle Codes erzeugen
-		// ToDo
-
-		return null;
+		Node root = pq.poll();
+        root.setCode(0,0);
+		return root;
 	}
 
 	/**
@@ -85,17 +98,30 @@ public class Huffman_Enc implements PlugInFilter {
 		final int w = ip.getWidth();
 		final int h = ip.getHeight();
 		BitSet bs = new BitSet();
-	
-		// alle Pixel der Reihe nach codieren und im bs abspeichern
-		// ToDo
 
+        int index = 0;
+        Node node;
+        long code;
+
+		// alle Pixel der Reihe nach codieren und im bs abspeichern
+		for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+                node = codes[ip.getPixel(j, i)];
+                code = node.getCode();
+                for (int k = node.getCodeLen() - 1; k >= 0 ; k--) {
+                    bs.set(index + k, code % 2 == 1);
+                    code >>= 1;
+                }
+                index += node.getCodeLen();
+            }
+        }
 		return bs;
 	}
 	
 	/**
 	 * Write file
 	 * @param filename
-	 * @param directory
+	 * @param dir
 	 * @param ip
 	 * @param root root of code tree
 	 * @param data encoded data
@@ -108,16 +134,17 @@ public class Huffman_Enc implements PlugInFilter {
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(dir + filename));
 			
 			// write Header
-			// ToDo
+			out.writeInt(w);
+            out.writeInt(h);
 
 			// write code tree
-			// ToDo
+			out.writeObject(root);
 
 			// write compressed data
-			// ToDo
+			out.writeObject(data);
 
 			// close file
-			// ToDo
+			out.close();
 			
 			IJ.showMessage("Huffman Encoder", "Image has been successfully saved.\n \n");
 		} catch(Exception e){
