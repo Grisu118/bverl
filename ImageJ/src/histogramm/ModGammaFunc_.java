@@ -10,7 +10,7 @@ import java.awt.*;
 /**
  * Created by benjamin on 03.10.2015.
  */
-public class modGama implements PlugInFilter{
+public class ModGammaFunc_ implements PlugInFilter{
     @Override
     public int setup(String s, ImagePlus imagePlus) {
         return DOES_8G;
