@@ -1,4 +1,4 @@
-// BVERI
+package huffman;// BVERI
 // Übung 2.2
 
 import ij.*;

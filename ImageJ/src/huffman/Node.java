@@ -1,3 +1,5 @@
+package huffman;
+
 import java.io.Serializable;
 
 /**

@@ -1,4 +1,4 @@
-/**
+package huffman; /**
  * Huffman decoder
  * @author Christoph Stamm
  *
