@@ -4,6 +4,7 @@ import ij.ImagePlus;
 import ij.gui.MessageDialog;
 import ij.plugin.filter.PlugInFilter;
 import ij.process.ImageProcessor;
+import utils.RGBUtils;
 
 /**
  * Created by benjamin on 12.10.2015.
@@ -43,15 +44,15 @@ public class RGB_to_YUV_ implements PlugInFilter {
                 int U = (int) Math.round(0.492*(rgb[Bi] - Y));
                 int V = (int) Math.round(0.877*(rgb[Ri] - Y));
 
-                Y = clamp(Y);
+                Y = RGBUtils.clamp(Y);
 
                 int R = (int)Math.round(Y - 3.9457e-005*U + 1.1398*V);
                 int G = (int)Math.round(Y - 0.39461*U - 0.5805*V);
                 int B = (int)Math.round(Y + 2.032*U - 0.00048138*V);
 
-                R = clamp(R);
-                G = clamp(G);
-                B = clamp(B);
+                R = RGBUtils.clamp(R);
+                G = RGBUtils.clamp(G);
+                B = RGBUtils.clamp(B);
 
                 psnrR += (rgb[Ri] - R)*(rgb[Ri] - R);
                 psnrG += (rgb[Gi] - G)*(rgb[Gi] - G);
@@ -72,9 +73,4 @@ public class RGB_to_YUV_ implements PlugInFilter {
 
     }
 
-    private int clamp(int v) {
-        if (v > 255) return 255;
-        else if (v < 0) return 0;
-        return v;
-    }
 }
